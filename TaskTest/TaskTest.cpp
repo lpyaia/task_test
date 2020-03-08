@@ -139,6 +139,9 @@ int main()
 {
     POINT posPersonagem;
 
+    cout << "Aperte enter para iniciar\n";
+    cin.ignore();
+
     cout << "Clique na posicao do personagem\n";
     while ((GetKeyState(VK_LBUTTON) & 0x100) == 0);
 
@@ -171,48 +174,52 @@ int main()
     cout << "MP: " << posMp.x << " " << posMp.y << "\n";
     cout << "descarte: " << posDescarteMp.x << " " << posDescarteMp.y << "\n";
 
+    int contadorTotal = 0;
     int contadorUsoMp = 0;
 
     while (true)
     {
-        srand((int)time(0));
-
-        int time = minSleep + (rand() % (maxSleep - minSleep + 1));
-
-        UseMp(posPersonagem, posMp);
-        contadorUsoMp++;
-        
-        Sleep(time);
-
-        DiscardMp(posMp, posDescarteMp);
-
-        Sleep(time);
-
-        if (contadorUsoMp == 4)
+        if (contadorTotal < 1910)
         {
-            contadorUsoMp = 0;
+            srand((int)time(0));
 
-            INPUT inputKeyboard = { 0 };
-            inputKeyboard.type = INPUT_KEYBOARD;
-            inputKeyboard.ki.wScan = 0;
-            inputKeyboard.ki.time = 0;
-            inputKeyboard.ki.dwExtraInfo = 0;
+            int time = minSleep + (rand() % (maxSleep - minSleep + 1));
+
+            UseMp(posPersonagem, posMp);
+            contadorUsoMp++;
+
+            Sleep(time);
+
+            DiscardMp(posMp, posDescarteMp);
 
             Sleep(time);
 
-            // control hold
-            inputKeyboard.ki.wVk = VK_F12;
-            inputKeyboard.ki.dwFlags = 0;
-            SendInput(1, &inputKeyboard, sizeof(INPUT));
+            if (contadorUsoMp == 4)
+            {
+                contadorUsoMp = 0;
 
-            Sleep(10);
+                INPUT inputKeyboard = { 0 };
+                inputKeyboard.type = INPUT_KEYBOARD;
+                inputKeyboard.ki.wScan = 0;
+                inputKeyboard.ki.time = 0;
+                inputKeyboard.ki.dwExtraInfo = 0;
 
-            // release control
-            inputKeyboard.ki.wVk = VK_F12;
-            inputKeyboard.ki.dwFlags = KEYEVENTF_KEYUP;
-            SendInput(1, &inputKeyboard, sizeof(INPUT));
+                Sleep(time);
 
-            Sleep(time);
+                // control hold
+                inputKeyboard.ki.wVk = VK_F12;
+                inputKeyboard.ki.dwFlags = 0;
+                SendInput(1, &inputKeyboard, sizeof(INPUT));
+
+                Sleep(10);
+
+                // release control
+                inputKeyboard.ki.wVk = VK_F12;
+                inputKeyboard.ki.dwFlags = KEYEVENTF_KEYUP;
+                SendInput(1, &inputKeyboard, sizeof(INPUT));
+
+                Sleep(time);
+            }
         }
     }
 
