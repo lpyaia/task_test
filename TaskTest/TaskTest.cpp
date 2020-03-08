@@ -40,7 +40,7 @@ void RightClick()
     SendInput(1, &input, sizeof(INPUT));
 }
 
-void UseMp(POINT posPersonagem, POINT posMp)
+void UseExerciseWeapon(POINT posPersonagem, POINT posMp)
 {
     srand((int)time(0));
 
@@ -99,120 +99,46 @@ void UseMp(POINT posPersonagem, POINT posMp)
     Sleep(time);
 }
 
-void DiscardMp(POINT posMp, POINT posDescartMp)
-{
-    srand((int)time(0));
-
-    int time = minSleep + (rand() % (maxSleep - minSleep + 1));
-    long variacaoPosicao = -10 + (rand() % (10 + 10 + 1));
-
-
-    INPUT inputMouse = { 0 };
-    inputMouse.type = INPUT_MOUSE;
-
-    // move to used mana pot position
-    SetCursorPos(posMp.x + variacaoPosicao, posMp.y + variacaoPosicao);
-
-    Sleep(time);
-
-    // left mouse button hold
-    inputMouse.type = INPUT_MOUSE;
-    inputMouse.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-    SendInput(1, &inputMouse, sizeof(INPUT));
-    
-    Sleep(time);
-
-    // move character position
-    SetCursorPos(posDescartMp.x + variacaoPosicao, posDescartMp.y + variacaoPosicao);
-
-    Sleep(time);
-
-    // release left mouse button 
-    inputMouse.type = INPUT_MOUSE;
-    inputMouse.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-    SendInput(1, &inputMouse, sizeof(INPUT));
-
-    Sleep(time);
-}
-
 int main()
 {
-    POINT posPersonagem;
+    POINT posDummy;
 
-    cout << "Clique na posicao do personagem\n";
+    cout << "Aperte enter para iniciar\n";
+    cin.ignore();
+
+    cout << "Clique na posicao do dummy\n";
     while ((GetKeyState(VK_LBUTTON) & 0x100) == 0);
 
-    GetCursorPos(&posPersonagem);
+    GetCursorPos(&posDummy);
 
     Sleep(500);
 
-    POINT posMp;
+    POINT posExerciseWeapon;
 
-    cout << "Clique na posição da mana pot\n";
+    cout << "Clique na posição do exercise weapon\n";
     while ((GetKeyState(VK_LBUTTON) & 0x100) == 0);
 
-    GetCursorPos(&posMp);
-
-    Sleep(500);
-
-    POINT posDescarteMp;
-
-    cout << "Clique na posicao de descarte da mana pot\n";
-    while ((GetKeyState(VK_LBUTTON) & 0x100) == 0);
-
-    GetCursorPos(&posDescarteMp);
+    GetCursorPos(&posExerciseWeapon);
 
     Sleep(500);
 
     cout << "Aperte enter para iniciar\n";
     cin.ignore();
 
-    cout << "personagem: " << posPersonagem.x << " " << posPersonagem.y << "\n";
-    cout << "MP: " << posMp.x << " " << posMp.y << "\n";
-    cout << "descarte: " << posDescarteMp.x << " " << posDescarteMp.y << "\n";
+    cout << "dummy: " << posDummy.x << " " << posDummy.y << "\n";
+    cout << "exercise weapon: " << posExerciseWeapon.x << " " << posExerciseWeapon.y << "\n";
 
-    int contadorUsoMp = 0;
+    int contadorTotal = 0;
 
     while (true)
     {
-        srand((int)time(0));
-
-        int time = minSleep + (rand() % (maxSleep - minSleep + 1));
-
-        UseMp(posPersonagem, posMp);
-        contadorUsoMp++;
-        
-        Sleep(time);
-
-        DiscardMp(posMp, posDescarteMp);
-
-        Sleep(time);
-
-        if (contadorUsoMp == 4)
+        if (contadorTotal < 1910)
         {
-            contadorUsoMp = 0;
+            UseExerciseWeapon(posDummy, posExerciseWeapon);
 
-            INPUT inputKeyboard = { 0 };
-            inputKeyboard.type = INPUT_KEYBOARD;
-            inputKeyboard.ki.wScan = 0;
-            inputKeyboard.ki.time = 0;
-            inputKeyboard.ki.dwExtraInfo = 0;
+            Sleep(28 * 60000);
 
-            Sleep(time);
-
-            // control hold
-            inputKeyboard.ki.wVk = VK_F12;
-            inputKeyboard.ki.dwFlags = 0;
-            SendInput(1, &inputKeyboard, sizeof(INPUT));
-
-            Sleep(10);
-
-            // release control
-            inputKeyboard.ki.wVk = VK_F12;
-            inputKeyboard.ki.dwFlags = KEYEVENTF_KEYUP;
-            SendInput(1, &inputKeyboard, sizeof(INPUT));
-
-            Sleep(time);
+            contadorTotal++;
         }
     }
 
